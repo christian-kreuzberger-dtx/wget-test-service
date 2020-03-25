@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os/exec"
+	"time"
 
 	"github.com/cloudevents/sdk-go/pkg/cloudevents"
 	"github.com/keptn-sandbox/sdk-go/pkg/keptn"
@@ -37,10 +40,29 @@ func HandleConfigurationChangeEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 func HandleDeploymentFinishedEvent(myKeptn *keptn.Keptn, incomingEvent cloudevents.Event, data *keptn.DeploymentFinishedEventData) error {
 	log.Printf("Handling Deployment Finished Event: %s", incomingEvent.Context.GetID())
 
-	// ToDo: Start tests
-	// return myKeptn.SendTestsFinishedEvent(&incomingEvent, data.TestStrategy, data.DeploymentStrategy, "TODO", "PASS", data.Labels, "keptn-service-template-go")
+	testsStarted := time.Now()
 
-	return nil
+	// ToDo: Start tests
+	// return myKeptn.SendTestsFinishedEvent(&incomingEvent, data.TestStrategy, data.DeploymentStrategy, "TODO", "PASS", data.Labels, "wget-test-service")
+
+	if data.DeploymentURIPublic == "" {
+		// no deployment URI available - skip tests
+		return myKeptn.SendTestsFinishedEvent(&incomingEvent, "", "", testsStarted, "warning", nil, "wget-test-service")
+	}
+
+	log.Printf("Executing wget %s", data.DeploymentURIPublic)
+	cmd := exec.Command("wget", data.DeploymentURIPublic)
+	stdout, err := cmd.Output()
+
+	fmt.Print(string(stdout))
+
+	if err != nil {
+		log.Println(err.Error())
+
+		return myKeptn.SendTestsFinishedEvent(&incomingEvent, "", "", testsStarted, "error", nil, "wget-test-service")
+	}
+
+	return myKeptn.SendTestsFinishedEvent(&incomingEvent, "", "", testsStarted, "success", nil, "wget-test-service")
 }
 
 //

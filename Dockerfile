@@ -4,7 +4,7 @@
 FROM golang:1.12.13-alpine as builder
 ARG version=develop
 
-WORKDIR /src/keptn-service-template-go
+WORKDIR /src/wget-test-service
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on
@@ -30,12 +30,12 @@ COPY . .
 
 # Build the command inside the container.
 # (You may fetch or manage dependencies here, either manually or with a tool like "godep".)
-RUN GOOS=linux go build -ldflags '-linkmode=external' $BUILDFLAGS -v -o keptn-service-template-go
+RUN GOOS=linux go build -ldflags '-linkmode=external' $BUILDFLAGS -v -o wget-test-service
 
 # Use a Docker multi-stage build to create a lean production image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 FROM alpine:3.11
-ENV env=production
+ENV ENV=production
 
 # Install extra packages
 # See https://github.com/gliderlabs/docker-alpine/issues/136#issuecomment-272703023
@@ -46,7 +46,7 @@ RUN    apk update && apk upgrade \
 	&& rm -rf /var/cache/apk/*
 
 # Copy the binary to the production image from the builder stage.
-COPY --from=builder /src/keptn-service-template-go/keptn-service-template-go /keptn-service-template-go
+COPY --from=builder /src/wget-test-service/wget-test-service /wget-test-service
 
 EXPOSE 8080
 
@@ -59,4 +59,4 @@ ENV GOTRACEBACK=all
 #travis-uncomment ENTRYPOINT ["/entrypoint.sh"]
 
 # Run the web service on container startup.
-CMD ["/keptn-service-template-go"]
+CMD ["/wget-test-service"]

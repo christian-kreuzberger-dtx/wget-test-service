@@ -21,7 +21,7 @@ Content-Type: application/cloudevents+json
   "shkeptncontext": "08735340-6f9e-4b32-97ff-3b6c292bc509",
   "data": {
     "project": "sockshop",
-    "stage": "dev",
+    "stage": "hardening",
     "service": "carts",
     "testStrategy": "performance",
     "deploymentStrategy": "direct",
@@ -32,7 +32,8 @@ Content-Type: application/cloudevents+json
       "buildnr": "build17",
       "runby": "JohnDoe"
     },
-    "deploymentURILocal": "http://carts.sockshop-staging.svc.cluster.local"
+    "deploymentURILocal": "http://carts.sockshop-staging.svc.cluster.local",
+    "deploymentURIPublic": "https://dynatrace.com"
   }
 }
 ###

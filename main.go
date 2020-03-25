@@ -27,7 +27,7 @@ type envConfig struct {
 	// URL of the Keptn configuration service (this is where we can fetch files from the config repo)
 	ConfigurationServiceUrl string `envconfig:"CONFIGURATION_SERVICE" default:""`
 	// URL of the Keptn event broker (this is where this service sends cloudevents to)
-	EventBrokerUrl string `envconfig:"CONFIGURATION_SERVICE" default:""`
+	EventBrokerUrl string `envconfig:"EVENTBROKER" default:""`
 }
 
 /**
@@ -146,6 +146,8 @@ func main() {
 func _main(args []string, env envConfig) int {
 	ctx := context.Background()
 
+	log.Printf("Env=%s\n", env.Env)
+
 	// configure keptn options
 	if env.Env == "local" {
 		log.Println("env=local: Running with local filesystem to fetch resources")
@@ -161,7 +163,7 @@ func _main(args []string, env envConfig) int {
 		cloudeventshttp.WithPath(env.Path),
 	)
 
-	log.Println("Starting keptn-service-template-go...")
+	log.Println("Starting wget-test-service...")
 	log.Printf("    on Port = %d; Path=%s", env.Port, env.Path)
 
 	if err != nil {
