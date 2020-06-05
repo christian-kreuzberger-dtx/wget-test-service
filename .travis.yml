@@ -22,6 +22,7 @@ jobs:
         - echo "blabla"
         - # this will cause an error
         - echo "Checking code style..."
+        - ls -la /bla # this will exit with an unknown code
         - unformatted=$(gofmt -l .)
         - |
           if [ ! -z "$unformatted" ]; then
