@@ -13,12 +13,14 @@ jobs:
       # Check Codestyle using go fmt
       services: []
       language: go
-      if: type = pull_request
       go:
         - 1.12.x
       # skip install
       install: true
       script:
+        - set -e
+        - echo "blabla"
+        - # this will cause an error
         - echo "Checking code style..."
         - unformatted=$(gofmt -l .)
         - |
@@ -28,6 +30,11 @@ jobs:
             echo "After that ammend your commit (e.g.: git add ${unformatted} && git commit --amend --no-edit) and force push the changes (git push -f)."
             travis_terminate 1
           fi
+      after_success:
+        - echo "Success!"
+      after_failure:
+        - echo "Failed"
+        - ls -la /
 
     - stage: tests
       # Run tests
